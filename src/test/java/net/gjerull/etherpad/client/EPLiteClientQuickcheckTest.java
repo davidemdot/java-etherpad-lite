@@ -7,15 +7,11 @@ import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
 import java.util.*;
 import java.nio.charset.Charset;
 
-import net.gjerull.etherpad.client.StringGenerator;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.matchers.Times;
@@ -32,6 +28,8 @@ public class EPLiteClientQuickcheckTest {
 
     private final String APIKEY = "a04f17343b51afaa036a7428171dd873469cd85911ab43be0503d29d2acbbd58";
     private final int PORT = 9001;
+    private final String API_VERSION = "1.2.13";
+    private final String ENCODING = "UTF-8";
     private final List<String> POST_ACTIONS = Arrays.asList("appendChatMessage", "appendText", "copyPad",
             "createAuthorIfNotExistsFor", "createGroup", "createGroupIfNotExistsFor", "createGroupPad", "createPad",
             "createSession", "deleteGroup", "deletePad", "deleteSession", "movePad", "saveRevision",
@@ -39,7 +37,7 @@ public class EPLiteClientQuickcheckTest {
 
     @Before
     public void setUp() throws Exception {
-        this.client = new EPLiteClient("http://localhost:" + PORT, APIKEY);
+        this.client = new EPLiteClient("http://localhost:" + PORT, APIKEY, API_VERSION, ENCODING);
 
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("org.mockserver.mock"))
                 .setLevel(ch.qos.logback.classic.Level.OFF);
@@ -63,13 +61,13 @@ public class EPLiteClientQuickcheckTest {
         this.mockServer
                 .when(HttpRequest.request()
                         .withMethod(method)
-                        .withPath("/api/1.2.13/" + action)
+                        .withPath("/api/" + API_VERSION + "/" + action)
                         .withBody(requestBody),
                         Times.exactly(1))
                 .respond(HttpResponse.response()
                         .withStatusCode(200)
                         .withBody(responseBody,
-                        Charset.forName("UTF-8")));
+                        Charset.forName(ENCODING)));
     }
 
     @Property

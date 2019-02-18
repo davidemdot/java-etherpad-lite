@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -373,7 +374,6 @@ public class EPLiteClientIntegrationTest {
 
     @Test
     public void create_pad_set_and_get_content() {
-
         mockRequest("createPad",
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad"),
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
@@ -558,7 +558,6 @@ public class EPLiteClientIntegrationTest {
 
     @Test
     public void create_pad_move_and_copy() throws Exception {
-
         mockRequest("createPad",
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad&text=should+be+kept"),
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
@@ -692,6 +691,10 @@ public class EPLiteClientIntegrationTest {
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad-1&text=hi+from+user1&authorID=a.W3CerL3LH1xgvu3m"),
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
 
+        mockRequest("listPadsOfAuthor",
+                new StringBody("apikey=" + APIKEY + "&authorID=a.W3CerL3LH1xgvu3m"),
+                "{\"code\":0,\"message\":\"ok\",\"data\":{\"padIDs\":[\"integration-test-pad-1\"]}}");
+
         mockRequest("appendChatMessage",
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad-1&text=hi+from+user2&time=" + time1 + "&authorID=a.yUKBa4lV71Rmj8C8"),
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
@@ -727,6 +730,11 @@ public class EPLiteClientIntegrationTest {
         client.createPad(padID);
         try {
             client.appendChatMessage(padID, "hi from user1", author1Id);
+
+            response = client.listPadsOfAuthor(author1Id);
+            List padsAuthor1 = (List) response.get("padIDs");
+            assertEquals(1, padsAuthor1.size());
+
             client.appendChatMessage(padID, "hi from user2", author2Id, time1);
             client.appendChatMessage(padID, "gå å gjør et ærend", author1Id, time2);
             response = client.getChatHead(padID);
@@ -745,5 +753,13 @@ public class EPLiteClientIntegrationTest {
         } finally {
             client.deletePad(padID);
         }
+    }
+
+    @Test
+    public void is_secure_or_not() {
+        assertFalse(client.isSecure());
+
+        EPLiteClient secureClient = new EPLiteClient("http://localhost:443", APIKEY);
+        assertTrue(secureClient.isSecure());
     }
 }
