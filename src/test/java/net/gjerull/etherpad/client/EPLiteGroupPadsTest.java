@@ -1,45 +1,56 @@
 package net.gjerull.etherpad.client;
 
-import org.graphwalker.java.annotation.Model;
-import org.graphwalker.java.annotation.Vertex;
-import org.graphwalker.java.annotation.Edge;
+import org.graphwalker.core.machine.ExecutionContext;
+import org.graphwalker.java.annotation.GraphWalker;
 
-@Model(file = "net/gjerull/etherpad/client/EPLiteGroupPads.graphml")
-public interface EPLiteGroupPadsTest {
+@GraphWalker(value = "random(edge_coverage(100))", start = "e_connection")
+public class EPLiteGroupPadsTest extends ExecutionContext implements EPLiteGroupPads {
 
-    @Vertex()
-    void v_PadIntoGroup();
+    public void e_connection() {
+        System.out.println("Connecting...");
+    }
 
-    @Edge()
-    void e_connection();
+    public void v_NoGroups() {
+        System.out.println("There are no groups.");
+    }
 
-    @Edge()
-    void e_setPublicStatus();
+    public void v_GroupWithoutPads() {
+        System.out.println("There is a group without pads.");
+    }
 
-    @Edge()
-    void e_createGroup();
+    public void v_PadIntoGroup() {
+        System.out.println("There is a group pad!");
+    }
 
-    @Edge()
-    void e_deleteGroup();
+    public void e_createGroup() {
+        System.out.println("Creating a group...");
+    }
 
-    @Edge()
-    void e_deletePad();
+    public void e_deleteGroup() {
+        System.out.println("Deleting the group...");
+    }
 
-    @Edge()
-    void e_setPassword();
+    public void e_createGroupPad() {
+        System.out.println("Creating a group pad...");
+    }
 
-    @Vertex()
-    void v_GroupWithoutPads();
+    public void e_deletePad() {
+        System.out.println("Deleting the group pad...");
+    }
 
-    @Edge()
-    void e_getPublicStatus();
+    public void e_setPublicStatus() {
+        System.out.println("Set public status.");
+    }
 
-    @Edge()
-    void e_isPasswordProtected();
+    public void e_getPublicStatus() {
+        System.out.println("Get public status.");
+    }
 
-    @Edge()
-    void e_createGroupPad();
+    public void e_setPassword() {
+        System.out.println("Set password.");
+    }
 
-    @Vertex()
-    void v_NoGroups();
+    public void e_isPasswordProtected() {
+        System.out.println("Check if it is protected.");
+    }
 }

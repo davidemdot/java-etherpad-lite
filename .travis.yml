@@ -1,7 +1,7 @@
 language: java
 
 script:
-  - mvn graphwalker:generate-sources test graphwalker:test
+  - mvn clean graphwalker:generate-sources test graphwalker:test
 
 after_success:
-  - mvn clean jacoco:report coveralls:report
+  - mvn jacoco:report coveralls:report
