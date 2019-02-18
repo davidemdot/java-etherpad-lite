@@ -44,6 +44,9 @@ public class EPLiteClientQuickcheckTest {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("org.mockserver.mock"))
                 .setLevel(ch.qos.logback.classic.Level.OFF);
 
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("junit-quickcheck.value-reporting"))
+                .setLevel(ch.qos.logback.classic.Level.OFF);
+
         this.mockServer = startClientAndServer(PORT);
     }
 
