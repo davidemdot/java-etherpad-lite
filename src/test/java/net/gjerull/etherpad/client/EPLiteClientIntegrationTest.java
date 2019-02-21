@@ -729,14 +729,19 @@ public class EPLiteClientIntegrationTest {
 
         client.createPad(padID);
         try {
-            client.appendChatMessage(padID, "hi from user1", author1Id);
+            response = client.appendChatMessage(padID, "hi from user1", author1Id);
+            assertTrue(response.isEmpty());
 
             response = client.listPadsOfAuthor(author1Id);
             List padsAuthor1 = (List) response.get("padIDs");
             assertEquals(1, padsAuthor1.size());
 
-            client.appendChatMessage(padID, "hi from user2", author2Id, time1);
-            client.appendChatMessage(padID, "gå å gjør et ærend", author1Id, time2);
+            response = client.appendChatMessage(padID, "hi from user2", author2Id, time1);
+            assertTrue(response.isEmpty());
+
+            response = client.appendChatMessage(padID, "gå å gjør et ærend", author1Id, time2);
+            assertTrue(response.isEmpty());
+
             response = client.getChatHead(padID);
             long chatHead = (long) response.get("chatHead");
             assertEquals(2, chatHead);
