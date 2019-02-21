@@ -1,11 +1,10 @@
 package net.gjerull.etherpad.client;
 
+import java.nio.charset.Charset;
+
 import com.pholser.junit.quickcheck.From;
 import com.pholser.junit.quickcheck.Property;
 import com.pholser.junit.quickcheck.runner.JUnitQuickcheck;
-
-import java.util.*;
-import java.nio.charset.Charset;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,10 +29,6 @@ public class EPLiteClientQuickcheckTest {
     private final int PORT = 9001;
     private final String API_VERSION = "1.2.13";
     private final String ENCODING = "UTF-8";
-    private final List<String> POST_ACTIONS = Arrays.asList("appendChatMessage", "appendText", "copyPad",
-            "createAuthorIfNotExistsFor", "createGroup", "createGroupIfNotExistsFor", "createGroupPad", "createPad",
-            "createSession", "deleteGroup", "deletePad", "deleteSession", "movePad", "saveRevision",
-            "sendClientsMessage", "setHTML", "setPassword", "setPublicStatus", "setText");
 
     @Before
     public void setUp() throws Exception {
@@ -54,13 +49,9 @@ public class EPLiteClientQuickcheckTest {
     }
 
     private void mockRequest(String action, StringBody requestBody, String responseBody) {
-        String method = POST_ACTIONS.contains(action) || (action == "createAuthor" && requestBody.toString() != "apikey=" + APIKEY)
-                        ? "POST"
-                        : "GET";
-
         this.mockServer
                 .when(HttpRequest.request()
-                        .withMethod(method)
+                        .withMethod(action == "getText" ? "GET" : "POST")
                         .withPath("/api/" + API_VERSION + "/" + action)
                         .withBody(requestBody),
                         Times.exactly(1))
@@ -74,16 +65,16 @@ public class EPLiteClientQuickcheckTest {
     public void create_pad_move_and_copy(@From(StringGenerator.class) String keep,
             @From(StringGenerator.class) String change) throws Exception {
 
-        String padID = "integration-test-pad";
-        String copyPadId = "integration-test-pad-copy";
-        String movePadId = "integration-move-pad-move";
+        String padId = "test-pad";
+        String copyPadId = "test-pad-copy";
+        String movePadId = "move-pad-move";
 
         mockRequest("createPad",
                 new StringBody(""),
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
 
         mockRequest("copyPad",
-                new StringBody("sourceID=" + padID + "&apikey=" + APIKEY + "&force=false&destinationID=" + copyPadId),
+                new StringBody("sourceID=" + padId + "&apikey=" + APIKEY + "&force=false&destinationID=" + copyPadId),
                 "{\"code\":0,\"message\":\"ok\",\"data\":{\"padID\":\"" + copyPadId + "\"}}");
 
         mockRequest("getText",
@@ -91,7 +82,7 @@ public class EPLiteClientQuickcheckTest {
                 "{\"code\":0,\"message\":\"ok\",\"data\":{\"text\":\"" + keep + "\\n\"}}");
 
         mockRequest("copyPad",
-                new StringBody("sourceID=" + padID + "&apikey=" + APIKEY + "&force=false&destinationID=" + movePadId),
+                new StringBody("sourceID=" + padId + "&apikey=" + APIKEY + "&force=false&destinationID=" + movePadId),
                 "{\"code\":0,\"message\":\"ok\",\"data\":{\"padID\":\"" + movePadId + "\"}}");
 
         mockRequest("getText",
@@ -123,24 +114,24 @@ public class EPLiteClientQuickcheckTest {
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
 
         mockRequest("deletePad",
-                new StringBody("apikey=" + APIKEY + "&padID=" + padID),
+                new StringBody("apikey=" + APIKEY + "&padID=" + padId),
                 "{\"code\":0,\"message\":\"ok\",\"data\":null}");
 
-        client.createPad(padID, keep);
+        this.client.createPad(padId, keep);
 
-        client.copyPad(padID, copyPadId);
-        String copyPadText = (String) client.getText(copyPadId).get("text");
-        client.movePad(padID, movePadId);
-        String movePadText = (String) client.getText(movePadId).get("text");
+        this.client.copyPad(padId, copyPadId);
+        String copyPadText = (String) this.client.getText(copyPadId).get("text");
+        this.client.movePad(padId, movePadId);
+        String movePadText = (String) this.client.getText(movePadId).get("text");
 
-        client.setText(movePadId, change);
-        client.copyPad(movePadId, copyPadId, true);
-        String copyPadTextForce = (String) client.getText(copyPadId).get("text");
-        client.movePad(movePadId, copyPadId, true);
-        String movePadTextForce = (String) client.getText(copyPadId).get("text");
+        this.client.setText(movePadId, change);
+        this.client.copyPad(movePadId, copyPadId, true);
+        String copyPadTextForce = (String) this.client.getText(copyPadId).get("text");
+        this.client.movePad(movePadId, copyPadId, true);
+        String movePadTextForce = (String) this.client.getText(copyPadId).get("text");
 
-        client.deletePad(copyPadId);
-        client.deletePad(padID);
+        this.client.deletePad(copyPadId);
+        this.client.deletePad(padId);
 
         assertEquals(keep + "\n", copyPadText);
         assertEquals(keep + "\n", movePadText);
