@@ -40,11 +40,11 @@ public class POSTRequest implements Request {
         URLConnection con = this.url.openConnection();
         con.setDoOutput(true);
 
-        OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+        OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream(), "UTF-8");
         out.write(this.body);
         out.close();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
         StringBuilder response = new StringBuilder();
         String buffer;
         while ((buffer = in.readLine()) != null) {

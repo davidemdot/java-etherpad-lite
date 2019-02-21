@@ -32,7 +32,7 @@ public class GETRequest implements Request {
      * @return String
      */
     public String send() throws Exception {
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
         StringBuilder response = new StringBuilder();
         String buffer;
         while ((buffer = in.readLine()) != null) {
