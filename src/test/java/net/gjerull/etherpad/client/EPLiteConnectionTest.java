@@ -63,6 +63,24 @@ public class EPLiteConnectionTest {
         assertEquals("apikey=apikey&padID=g.oln5fzaE8qfv4gdE%24test-1&text=%C3%A6%C3%B8%C3%A5", queryString);
     }
 
+    @Test
+    public void invalid_encoding_query_string_from_map() throws Exception {
+        EPLiteConnection connection = new EPLiteConnection(
+                "http://example.com/", "apikey", API_VERSION, "UTF-123"
+        );
+        Map<String,Object> apiArgs = new TreeMap<>(); // Ensure ordering for testing
+        apiArgs.put("padID", "g.oln5fzaE8qfv4gdE$test-1");
+        apiArgs.put("text", "æøå");
+
+        try {
+            connection.queryString(apiArgs, true);
+            fail("Expected '" + EPLiteException.class.getName() + "' to be thrown");
+        } catch (EPLiteException e) {
+            assertTrue("Unexpected Message: " + e.getMessage(),
+                    e.getMessage().startsWith("Unable to URLEncode using encoding"));
+        }
+    }
+
     @Test(expected = EPLiteException.class)
     public void api_url_need_to_be_absolute() throws Exception {
         EPLiteConnection connection = new EPLiteConnection(
@@ -146,6 +164,22 @@ public class EPLiteConnectionTest {
             fail("Expected '" + EPLiteException.class.getName() + "' to be thrown");
         } catch (EPLiteException e) {
             assertEquals("no or wrong API Key", e.getMessage());
+        }
+    }
+
+    @Test
+    public void handle_invalid_code_argument_error_from_server() throws Exception {
+        EPLiteConnection connection = new EPLiteConnection(
+                "http://example.com/", "invalid", API_VERSION, ENCODING
+        );
+        String serverResponse = String.format(RESPONSE_TEMPLATE, 5, "code argument does not exist", null);
+
+        try {
+            connection.handleResponse(serverResponse);
+            fail("Expected '" + EPLiteException.class.getName() + "' to be thrown");
+        } catch (EPLiteException e) {
+            assertTrue("Unexpected Message: " + e.getMessage(),
+                    e.getMessage().startsWith("An unknown error has occurred while handling the response:"));
         }
     }
 
