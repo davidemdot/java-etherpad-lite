@@ -44,11 +44,12 @@ public class EPLiteClient {
     }
 
     // Groups
-    // Pads may belong to a group. These pads are not considered "public", and won't be available through the Web UI without a session.
+    // Pads may belong to a group. These pads are not considered "public", and won't be available
+    // through the Web UI without a session.
 
     /**
      * Creates a new Group. The group id is returned in "groupID" in the Map.
-     * 
+     *
      * @return Map with groupID
      */
     public Map createGroup() {
@@ -56,14 +57,15 @@ public class EPLiteClient {
     }
 
     /**
-     * Creates a new Group for groupMapper if one doesn't already exist. Helps you map your application's groups to Etherpad Lite's groups.
-     * The group id is returned in "groupID" in the Map.
-     * 
+     * Creates a new Group for groupMapper if one doesn't already exist. Helps you map your
+     * application's groups to Etherpad Lite's groups. The group id is returned in "groupID" in the
+     * Map.
+     *
      * @param groupMapper your group mapper string
      * @return Map with groupID
      */
     public Map createGroupIfNotExistsFor(String groupMapper) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupMapper", groupMapper);
         return this.connection.post("createGroupIfNotExistsFor", args);
     }
@@ -74,31 +76,31 @@ public class EPLiteClient {
      * @param groupID string
      */
     public void deleteGroup(String groupID) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupID", groupID);
         this.connection.post("deleteGroup", args);
     }
 
     /**
      * List all the padIDs in a group. They will be in an array inside "padIDs".
-     * 
+     *
      * @param groupID string
      * @return Map
      */
     public Map listPads(String groupID) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupID", groupID);
         return this.connection.get("listPads", args);
     }
 
     /**
      * Create a pad in this group.
-     * 
+     *
      * @param groupID the group the pad belongs to
      * @param padName name of the pad
      */
     public Map createGroupPad(String groupID, String padName) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupID", groupID);
         args.put("padName", padName);
         return this.connection.post("createGroupPad", args);
@@ -106,26 +108,26 @@ public class EPLiteClient {
 
     /**
      * Create a pad in this group, with initial text.
-     * 
+     *
      * @param groupID the group the pad belongs to
      * @param padName name of the pad
      * @param text Initial text in the pad
      */
     public Map createGroupPad(String groupID, String padName, String text) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupID", groupID);
         args.put("padName", padName);
         args.put("text", text);
         return this.connection.post("createGroupPad", args);
     }
-    
+
     /**
      * Lists all existing groups. The group ids are returned in "groupIDs".
-     * 
+     *
      * @return Map with list of groupIDs
      */
     public Map listAllGroups() {
-    	return this.connection.get("listAllGroups");
+        return this.connection.get("listAllGroups");
     }
 
     // Authors
@@ -134,7 +136,7 @@ public class EPLiteClient {
 
     /**
      * Create a new author.
-     * 
+     *
      * @return Map with authorID
      */
     public Map createAuthor() {
@@ -143,12 +145,12 @@ public class EPLiteClient {
 
     /**
      * Create a new author with the given name. The author id is returned in "authorID".
-     * 
+     *
      * @param name string
      * @return Map with authorID
      */
     public Map createAuthor(String name) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("name", name);
         return this.connection.post("createAuthor", args);
     }
@@ -157,12 +159,12 @@ public class EPLiteClient {
      * Creates a new Author for authorMapper if one doesn't already exist.
      * Helps you map your application's authors to Etherpad Lite's authors.
      * The author id is returned in "authorID".
-     * 
+     *
      * @param authorMapper string
      * @return Map with authorID
      */
     public Map createAuthorIfNotExistsFor(String authorMapper) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("authorMapper", authorMapper);
         return this.connection.post("createAuthorIfNotExistsFor", args);
     }
@@ -171,13 +173,13 @@ public class EPLiteClient {
      * Creates a new Author for authorMapper if one doesn't already exist.
      * Helps you map your application's authors to Etherpad Lite's authors.
      * The author id is returned in "authorID".
-     * 
+     *
      * @param authorMapper string
      * @param name string
      * @return Map with authorID
      */
     public Map createAuthorIfNotExistsFor(String authorMapper, String name) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("authorMapper", authorMapper);
         args.put("name", name);
         return this.connection.post("createAuthorIfNotExistsFor", args);
@@ -185,36 +187,39 @@ public class EPLiteClient {
 
     /**
      * List the ids of pads the author has edited. They will be in an array inside "padIDs".
-     * 
+     *
      * @param authorId the authors's id string
      * @return Map
      */
     public Map listPadsOfAuthor(String authorId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("authorID", authorId);
         return this.connection.get("listPadsOfAuthor", args);
     }
-    
+
     /**
      * Returns the Author Name of the author.
-     * 
+     *
      * @param authorId the author's id string
      * @return authorName
      */
     public String getAuthorName(String authorId) {
-    	Map<String,Object> args = new HashMap<>();
-    	args.put("authorID", authorId);
-    	return (String) this.connection.getObject("getAuthorName", args);
+        Map<String, Object> args = new HashMap<>();
+        args.put("authorID", authorId);
+        return (String) this.connection.getObject("getAuthorName", args);
     }
 
     // Sessions
-    // Sessions can be created between a group and an author. This allows an author to access more than one group. The sessionID will be set as a
-    // cookie to the client and is valid until a certain date. Only users with a valid session for this group, can access group pads. You can create a
-    // session after you authenticated the user at your web application, to give them access to the pads. You should save the sessionID of this session
-    // and delete it after the user logged out.
+    // Sessions can be created between a group and an author. This allows an author to access more
+    // than one group. The sessionID will be set as a cookie to the client and is valid until a
+    // certain date. Only users with a valid session for this group, can access group pads. You can
+    // create a session after you authenticated the user at your web application, to give them
+    // access to the pads. You should save the sessionID of this session and delete it after the
+    // user logged out.
 
     /**
-     * Create a new session for the given author in the given group, valid until the given UNIX time.
+     * Create a new session for the given author in the given group, valid until the given UNIX
+     * time.
      * <br />
      * Example:<br />
      * <br />
@@ -225,14 +230,14 @@ public class EPLiteClient {
      * long in1Hour = (now.getTime() + (60L * 60L * 1000L) / 1000L);<br />
      * String sessID1 = api.createSession(groupID, authorID, in1Hour);
      * </code>
-     * 
+     *
      * @param groupID string
      * @param authorID string
      * @param validUntil long UNIX timestamp <strong>in seconds</strong>
      * @return Map with sessionID
      */
     public Map createSession(String groupID, String authorID, long validUntil) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupID", groupID);
         args.put("authorID", authorID);
         args.put("validUntil", String.valueOf(validUntil));
@@ -240,7 +245,8 @@ public class EPLiteClient {
     }
 
     /**
-     * Create a new session for the given author in the given group valid for the given number of hours.
+     * Create a new session for the given author in the given group valid for the given number of
+     * hours.
      * <br />
      * Example:<br />
      * <br />
@@ -248,14 +254,15 @@ public class EPLiteClient {
      * // in 2 hours<br />
      * String sessID1 = api.createSession(groupID, authorID, 2);
      * </code>
-     * 
+     *
      * @param groupID string
      * @param authorID string
      * @param sessionDuration int duration of session in hours
      * @return Map with sessionID
      */
     public Map createSession(String groupID, String authorID, int sessionDuration) {
-            long inNHours = ((new Date()).getTime() + ((long)sessionDuration * 60L * 60L * 1000L)) / 1000L;
+        long inNHours = ((new Date()).getTime() + ((long) sessionDuration * 60L * 60L * 1000L))
+                / 1000L;
         return this.createSession(groupID, authorID, inNHours);
     }
 
@@ -275,7 +282,7 @@ public class EPLiteClient {
      * Date longTime = dfm.parse("2056-01-15 20:15:00");<br />
      * String sessID = api.createSession(groupID, authorID, longTime);
      * </code>
-     * 
+     *
      * @param groupID string
      * @param authorID string
      * @param validUntil Date
@@ -288,49 +295,49 @@ public class EPLiteClient {
 
     /**
      * Delete a session.
-     * 
+     *
      * @param sessionID string
      */
     public void deleteSession(String sessionID) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("sessionID", sessionID);
         this.connection.post("deleteSession", args);
     }
 
     /**
      * Returns information about a session: authorID, groupID and validUntil.
-     * 
+     *
      * @param sessionID string
      * @return Map
      */
     public Map getSessionInfo(String sessionID) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("sessionID", sessionID);
         return this.connection.get("getSessionInfo", args);
     }
 
     /**
-     * List all the sessions IDs in a group. Returned as a Map of sessionIDs keys, with values of Maps containing
-     * groupID, authorID, and validUntil.
-     * 
+     * List all the sessions IDs in a group. Returned as a Map of sessionIDs keys, with values of
+     * Maps containing groupID, authorID, and validUntil.
+     *
      * @param groupID string
      * @return Map
      */
     public Map listSessionsOfGroup(String groupID) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("groupID", groupID);
         return this.connection.get("listSessionsOfGroup", args);
     }
 
     /**
-     * List all the sessions IDs belonging to an author. Returned as a Map of sessionIDs keys, with values of Maps containing
-     * groupID, authorID, and validUntil.
-     * 
+     * List all the sessions IDs belonging to an author. Returned as a Map of sessionIDs keys, with
+     * values of Maps containing groupID, authorID, and validUntil.
+     *
      * @param authorID string
      * @return Map
      */
     public Map listSessionsOfAuthor(String authorID) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("authorID", authorID);
         return this.connection.get("listSessionsOfAuthor", args);
     }
@@ -340,12 +347,12 @@ public class EPLiteClient {
     /**
      * Returns a Map containing the latest revision of the pad's text.
      * The text is stored under "text".
-     * 
+     *
      * @param padId the pad's id string
      * @return a Map with the text content of pad
      */
     public Map getText(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getText", args);
     }
@@ -353,13 +360,13 @@ public class EPLiteClient {
     /**
      * Returns a Map containing the a specific revision of the pad's text.
      * The text is stored under "text".
-     * 
+     *
      * @param padId the pad's id string
      * @param rev the revision number
      * @return a Map with the text content of pad in given revision
      */
     public Map getText(String padId, long rev) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("rev", rev);
         return this.connection.get("getText", args);
@@ -367,12 +374,12 @@ public class EPLiteClient {
 
     /**
      * Creates a new revision with the given text.
-     * 
+     *
      * @param padId the pad's id string
      * @param text the pad's new text
      */
     public void setText(String padId, String text) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("text", text);
         this.connection.post("setText", args);
@@ -380,14 +387,14 @@ public class EPLiteClient {
 
     /**
      * Creates a new revision with the given text appended to the existing text.
-     *
+     * <br/>
      * API >= 1.2.13
      *
      * @param padId the pad's id string
      * @param text the pad's new text
      */
     public void appendText(String padId, String text) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("text", text);
         this.connection.post("appendText", args);
@@ -396,12 +403,12 @@ public class EPLiteClient {
     /**
      * Returns a Map containing the current revision of the pad's text as HTML.
      * The html is stored under "html".
-     * 
+     *
      * @param padId the pad's id string
      * @return a Map with the HTML content of pad
      */
     public Map getHTML(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getHTML", args);
     }
@@ -409,13 +416,13 @@ public class EPLiteClient {
     /**
      * Returns a Map containing the a specific revision of the pad's text as HTML.
      * The html is stored under "html".
-     * 
+     *
      * @param padId the pad's id string
      * @param rev the revision number
      * @return a Map with the HTML content of pad in given revision
      */
     public Map getHTML(String padId, long rev) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("rev", rev);
         return this.connection.get("getHTML", args);
@@ -423,48 +430,48 @@ public class EPLiteClient {
 
     /**
      * Creates a new revision with the given html.
-     * 
+     *
      * @param padId the pad's id string
      * @param html the pad's new html text
      */
     public void setHTML(String padId, String html) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("html", html);
         this.connection.post("setHTML", args);
     }
 
     /**
-     * Returns the attribute pool of a pad
-     *
+     * Returns the attribute pool of a pad.
+     * <br/>
      * API >= 1.2.8
      *
      * @param padId the pad's id string
      * @return a Map with the attribute pool of a pad
      */
     public Map getAttributePool(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getAttributePool", args);
     }
 
     /**
      * Get the changeset at the last revision.
-     *
+     * <br/>
      * API >= 1.2.8
      *
      * @param padId the pad's id string
      * @return the changeset at the last revision.
      */
     public String getRevisionChangeset(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return (String) this.connection.getObject("getRevisionChangeset", args);
     }
 
     /**
      * Get the changeset at a given revision.
-     *
+     * <br/>
      * API >= 1.2.8
      *
      * @param padId the pad's id string
@@ -472,15 +479,15 @@ public class EPLiteClient {
      * @return the changeset at a given revision.
      */
     public String getRevisionChangeset(String padId, long rev) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("rev", rev);
         return (String) this.connection.getObject("getRevisionChangeset", args);
     }
 
     /**
-     * Returns an object of diffs from 2 points in a pad
-     *
+     * Returns an object of diffs from 2 points in a pad.
+     * <br/>
      * API >= 1.2.7
      *
      * @param padId the pad's id string
@@ -489,7 +496,7 @@ public class EPLiteClient {
      * @return a Map of diffs from 2 points in a pad
      */
     public Map createDiffHTML(String padId, long startRev, long endRev) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("startRev", startRev);
         args.put("endRev", endRev);
@@ -499,22 +506,22 @@ public class EPLiteClient {
     // Chat
 
     /**
-     * Returns the complete chat history of pad
-     *
+     * Returns the complete chat history of pad.
+     * <br/>
      * API >= 1.2.7
      *
      * @param padId the pad's id string
      * @return the whole chat histroy
      */
     public Map getChatHistory(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getChatHistory", args);
     }
 
     /**
-     * Returns the chat history of pad with index between start and end
-     *
+     * Returns the chat history of pad with index between start and end.
+     * <br/>
      * API >= 1.2.7
      *
      * @param padId the pad's id string
@@ -523,7 +530,7 @@ public class EPLiteClient {
      * @return a part of the chat history, between start and end
      */
     public Map getChatHistory(String padId, long start, long end) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("start", start);
         args.put("end", end);
@@ -531,15 +538,15 @@ public class EPLiteClient {
     }
 
     /**
-     * Returns the chatHead (last number of the last chat-message) of the pad
-     *
+     * Returns the chatHead (last number of the last chat-message) of the pad.
+     * <br/>
      * API >= 1.2.7
      *
      * @param padId the pad's id string
      * @return the last number of the last chat-message
      */
     public Map getChatHead(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getChatHead", args);
     }
@@ -547,7 +554,7 @@ public class EPLiteClient {
     /**
      * Creates a chat message, saves it to the database and sends it to all
      * connected clients of this pad, using the current time as timestamp.
-     *
+     * <br/>     *
      * API >= 1.2.12
      *
      * @param padId the pad's id string
@@ -555,7 +562,7 @@ public class EPLiteClient {
      * @param authorId the author of this chat entry
      */
     public Map appendChatMessage(String padId, String text, String authorId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("text", text);
         args.put("authorID", authorId);
@@ -565,7 +572,7 @@ public class EPLiteClient {
     /**
      * Creates a chat message, saves it to the database and sends it to all
      * connected clients of this pad.
-     *
+     * <br/>
      * API >= 1.2.12
      *
      * @param padId the pad's id string
@@ -574,7 +581,7 @@ public class EPLiteClient {
      * @param time the timestamp of this chat entry
      */
     public Map appendChatMessage(String padId, String text, String authorId,  long time) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("text", text);
         args.put("authorID", authorId);
@@ -583,8 +590,8 @@ public class EPLiteClient {
     }
 
     // Pads
-    // Group pads are normal pads, but with the name schema GROUPID$PADNAME. A security manager controls access of them and its 
-    // forbidden for normal pads to include a $ in the name.
+    // Group pads are normal pads, but with the name schema GROUPID$PADNAME. A security manager
+    // controls access of them and its forbidden for normal pads to include a $ in the name.
 
     /**
      * Returns a list of all pads.
@@ -597,23 +604,23 @@ public class EPLiteClient {
 
     /**
      * Create a new pad.
-     * 
+     *
      * @param padId the pad's id string
      */
     public void createPad(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         this.connection.post("createPad", args);
     }
 
     /**
      * Create a new pad with the given initial text.
-     * 
+     *
      * @param padId the pad's id string
      * @param text the initial text string
      */
     public void createPad(String padId, String text) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("text", text);
         this.connection.post("createPad", args);
@@ -621,67 +628,67 @@ public class EPLiteClient {
 
     /**
      * Returns the number of revisions of this pad. The number is in "revisions".
-     * 
+     *
      * @param padId the pad's id string
      * @return a Map with the number of revisions
      */
     public Map getRevisionsCount(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getRevisionsCount", args);
     }
 
     /**
-     * Returns the number of saved revisions of this pad
-     *
+     * Returns the number of saved revisions of this pad.
+     * <br/>
      * API >= 1.2.11
      *
      * @param padId the pad's id string
      * @return a Map with number of saved revisions
      */
     public Map getSavedRevisionsCount(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getSavedRevisionsCount", args);
     }
 
     /**
-     * returns the list of saved revisions of this pad
-     *
+     * Returns the list of saved revisions of this pad.
+     * <br/>
      * API >= 1.2.11
      *
      * @param padId the pad's id string
      * @return a Map with the list of saved revision numbers
      */
     public Map listSavedRevisions(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("listSavedRevisions", args);
     }
 
     /**
-     * Saves the latest revision
-     *
+     * Saves the latest revision.
+     * <br/>
      * API >= 1.2.11
      *
      * @param padId the pad's id string
      */
     public void saveRevision(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         this.connection.post("saveRevision", args);
     }
 
     /**
-     * Saves the given revision
-     *
+     * Saves the given revision.
+     * <br/>
      * API >= 1.2.11
      *
      * @param padId the pad's id string
      * @param rev the revision to be saved
      */
     public void saveRevision(String padId, long rev) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("rev", rev);
         this.connection.post("saveRevision", args);
@@ -694,7 +701,7 @@ public class EPLiteClient {
      * @return a Map with the padUsersCount
      */
     public Map padUsersCount(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("padUsersCount", args);
     }
@@ -707,7 +714,7 @@ public class EPLiteClient {
      * @return a Map with a List of pad user maps
      */
     public Map padUsers(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("padUsers", args);
     }
@@ -718,14 +725,14 @@ public class EPLiteClient {
      * @param padId the pad's id string
      */
     public void deletePad(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         this.connection.post("deletePad", args);
     }
 
     /**
      * Copies a pad with full history and chat. If the destination exists the copy will fail.
-     *
+     * <br/>
      * API >= 1.2.8
      *
      * @param sourcePadId the id of the source pad
@@ -737,7 +744,7 @@ public class EPLiteClient {
 
     /**
      * Copies a pad with full history and chat.
-     *
+     * <br/>
      * API >= 1.2.8
      *
      * @param sourcePadId the id of the source pad
@@ -745,7 +752,7 @@ public class EPLiteClient {
      * @param force if force is true and the destination pad exists, it will be overwritten.
      */
     public void copyPad(String sourcePadId, String destinationPadId, boolean force) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("sourceID", sourcePadId);
         args.put("destinationID", destinationPadId);
         args.put("force", force);
@@ -754,7 +761,7 @@ public class EPLiteClient {
 
     /**
      * Moves a pad. If the destination exists the copy will fail.
-     *
+     * <br/>
      * API >= 1.2.8
      *
      * @param sourcePadId the id of the source pad
@@ -766,7 +773,7 @@ public class EPLiteClient {
 
     /**
      * Moves a pad.
-     *
+     * <br/>
      * API >= 1.2.8
      *
      * @param sourcePadId the id of the source pad
@@ -774,7 +781,7 @@ public class EPLiteClient {
      * @param force if force is true and the destination pad exists, it will be overwritten.
      */
     public void movePad(String sourcePadId, String destinationPadId, boolean force) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("sourceID", sourcePadId);
         args.put("destinationID", destinationPadId);
         args.put("force", force);
@@ -788,21 +795,21 @@ public class EPLiteClient {
      * @return a Map with the readOnlyID
      */
     public Map getReadOnlyID(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getReadOnlyID", args);
     }
 
     /**
-     * Get the pad's id from the read only id
-     *
+     * Get the pad's id from the read only id.
+     * <br/>
      * API >= 1.2.10
      *
      * @param readOnlyPadId the pad's read only id string
      * @return a Map with the padID
      */
     public Map getPadID(String readOnlyPadId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("roID", readOnlyPadId);
         return this.connection.get("getPadID", args);
     }
@@ -815,7 +822,7 @@ public class EPLiteClient {
      * @param publicStatus boolean
      */
     public void setPublicStatus(String padId, Boolean publicStatus) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("publicStatus", publicStatus);
         this.connection.post("setPublicStatus", args);
@@ -828,7 +835,7 @@ public class EPLiteClient {
      * @return a Map with the Boolean publicStatus
      */
     public Map getPublicStatus(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getPublicStatus", args);
     }
@@ -840,7 +847,7 @@ public class EPLiteClient {
      * @param password string
      */
     public void setPassword(String padId, String password) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("password", password);
         this.connection.post("setPassword", args);
@@ -865,7 +872,7 @@ public class EPLiteClient {
      * @return a Map with a List of author ids
      */
     public Map listAuthorsOfPad(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("listAuthorsOfPad", args);
     }
@@ -877,27 +884,27 @@ public class EPLiteClient {
      * @return a Map with lastEdited timestamp.
      */
     public Map getLastEdited(String padId) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         return this.connection.get("getLastEdited", args);
     }
 
     /**
      * Sends a custom message of type msg to the pad.
-     * 
+     *
      * @param padId the pad's id string
      * @param msg the message to send
      */
     public void sendClientsMessage(String padId, String msg) {
-        Map<String,Object> args = new HashMap<>();
+        Map<String, Object> args = new HashMap<>();
         args.put("padID", padId);
         args.put("msg", msg);
         this.connection.post("sendClientsMessage", args);
     }
 
     /**
-     * Runs without error if current api token is valid
-     *
+     * Runs without error if current api token is valid.
+     * <br/>
      * API >= 1.2
      */
     public void checkToken() {
@@ -906,7 +913,7 @@ public class EPLiteClient {
 
     /**
      * Returns true if the connection is using SSL/TLS, false if not.
-     * 
+     *
      * @return boolean
      */
     public boolean isSecure() {

@@ -1,8 +1,8 @@
 package net.gjerull.etherpad.client;
 
-import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 /**
  * A class for easily executing an HTTP GET request.<br />
@@ -19,7 +19,7 @@ public class GETRequest implements Request {
 
     /**
      * Instantiates a new GETRequest.
-     * 
+     *
      * @param url the URL object
      */
     public GETRequest(URL url) {
@@ -28,7 +28,7 @@ public class GETRequest implements Request {
 
     /**
      * Sends the request and returns the response.
-     * 
+     *
      * @return String
      */
     public String send() throws Exception {

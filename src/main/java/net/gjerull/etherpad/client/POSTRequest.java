@@ -1,10 +1,10 @@
 package net.gjerull.etherpad.client;
 
-import java.net.URL;
-import java.net.URLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * A class for easily executing an HTTP POST request.<br />
@@ -33,7 +33,7 @@ public class POSTRequest implements Request {
 
     /**
      * Sends the request and returns the response.
-     * 
+     *
      * @return String
      */
     public String send() throws Exception {
@@ -44,7 +44,8 @@ public class POSTRequest implements Request {
         out.write(this.body);
         out.close();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(),
+                "UTF-8"));
         StringBuilder response = new StringBuilder();
         String buffer;
         while ((buffer = in.readLine()) != null) {
