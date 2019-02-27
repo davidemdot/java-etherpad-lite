@@ -305,12 +305,15 @@ public class EPLiteClientIntegrationTest {
         Date sessionValidUntil = oneYearFromNow.getTime();
         long validUntil = sessionValidUntil.getTime() / 1000L;
 
+        int sessionDuration = 8;
+        long inNHours = ((new Date()).getTime() + (sessionDuration * 60L * 60L * 1000L)) / 1000L;
+
         mockRequest("createSession",
-                new StringBody(""),  // apikey=" + APIKEY + "&groupID=g.8gG2mcJguOEo4std&validUntil=1550319910&authorID=a.kPrLhmVVGK3Y5j03"),
+                new StringBody("apikey=" + APIKEY + "&groupID=g.8gG2mcJguOEo4std&validUntil=" + inNHours + "&authorID=a.kPrLhmVVGK3Y5j03"),
                 "{\"code\":0,\"message\":\"ok\",\"data\":{\"sessionID\":\"s.195787a420c128e5827bafa026a2d95a\"}}");
 
         mockRequest("createSession",
-                new StringBody(""),  // apikey=" + APIKEY + "&groupID=g.8gG2mcJguOEo4std&validUntil=" + validUntil + "&authorID=a.kPrLhmVVGK3Y5j03"),
+                new StringBody("apikey=" + APIKEY + "&groupID=g.8gG2mcJguOEo4std&validUntil=" + validUntil + "&authorID=a.kPrLhmVVGK3Y5j03"),
                 "{\"code\":0,\"message\":\"ok\",\"data\":{\"sessionID\":\"s.9409d25a24542516843dc9361e718852\"}}");
 
         mockRequest("getSessionInfo",
@@ -319,11 +322,11 @@ public class EPLiteClientIntegrationTest {
 
         mockRequest("listSessionsOfGroup",
                 new StringBody("apikey=" + APIKEY + "&groupID=g.8gG2mcJguOEo4std"),
-                "{\"code\":0,\"message\":\"ok\",\"data\":{\"s.195787a420c128e5827bafa026a2d95a\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":1550319910},\"s.9409d25a24542516843dc9361e718852\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":" + validUntil + "}}}");
+                "{\"code\":0,\"message\":\"ok\",\"data\":{\"s.195787a420c128e5827bafa026a2d95a\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":" + inNHours + "},\"s.9409d25a24542516843dc9361e718852\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":" + validUntil + "}}}");
 
         mockRequest("listSessionsOfAuthor",
                 new StringBody("apikey=" + APIKEY + "&authorID=a.kPrLhmVVGK3Y5j03"),
-                "{\"code\":0,\"message\":\"ok\",\"data\":{\"s.195787a420c128e5827bafa026a2d95a\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":1550319910},\"s.9409d25a24542516843dc9361e718852\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":" + validUntil + "}}}");
+                "{\"code\":0,\"message\":\"ok\",\"data\":{\"s.195787a420c128e5827bafa026a2d95a\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":" + inNHours + "},\"s.9409d25a24542516843dc9361e718852\":{\"groupID\":\"g.8gG2mcJguOEo4std\",\"authorID\":\"a.kPrLhmVVGK3Y5j03\",\"validUntil\":" + validUntil + "}}}");
 
         mockRequest("deleteSession",
                 new StringBody("apikey=" + APIKEY + "&sessionID=s.195787a420c128e5827bafa026a2d95a"),
@@ -341,7 +344,6 @@ public class EPLiteClientIntegrationTest {
         Map authorResponse = client.createAuthorIfNotExistsFor(authorMapper, "integration-author-1");
         String authorId = (String) authorResponse.get("authorID");
 
-        int sessionDuration = 8;
         Map sessionResponse = client.createSession(groupId, authorId, sessionDuration);
         String firstSessionId = (String) sessionResponse.get("sessionID");
 
@@ -693,7 +695,7 @@ public class EPLiteClientIntegrationTest {
 
         mockRequest("listPadsOfAuthor",
                 new StringBody("apikey=" + APIKEY + "&authorID=a.W3CerL3LH1xgvu3m"),
-                "{\"code\":0,\"message\":\"ok\",\"data\":{\"padIDs\":[\"integration-test-pad-1\"]}}");
+                "{\"code\":0,\"message\":\"ok\",\"data\":{\"padIDs\":[]}}");
 
         mockRequest("appendChatMessage",
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad-1&text=hi+from+user2&time=" + time1 + "&authorID=a.yUKBa4lV71Rmj8C8"),
@@ -709,11 +711,11 @@ public class EPLiteClientIntegrationTest {
 
         mockRequest("getChatHistory",
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad-1"),
-                "{\"code\":0,\"message\":\"ok\",\"data\":{\"messages\":[{\"text\":\"hi from user1\",\"userId\":\"a.W3CerL3LH1xgvu3m\",\"time\":" + time1 +",\"userName\":\"integration-author-1\"},{\"text\":\"hi from user2\",\"userId\":\"a.yUKBa4lV71Rmj8C8\",\"time\":" + time2 +",\"userName\":\"integration-author-2\"},{\"text\":\"gå å gjør et ærend\",\"userId\":\"a.W3CerL3LH1xgvu3m\",\"time\":" + time2 + ",\"userName\":\"integration-author-1\"}]}}");
+                "{\"code\":0,\"message\":\"ok\",\"data\":{\"messages\":[{\"text\":\"hi from user1\",\"userId\":\"a.W3CerL3LH1xgvu3m\",\"time\":" + time1 + ",\"userName\":\"integration-author-1\"},{\"text\":\"hi from user2\",\"userId\":\"a.yUKBa4lV71Rmj8C8\",\"time\":" + time2 + ",\"userName\":\"integration-author-2\"},{\"text\":\"gå å gjør et ærend\",\"userId\":\"a.W3CerL3LH1xgvu3m\",\"time\":" + time2 + ",\"userName\":\"integration-author-1\"}]}}");
 
         mockRequest("getChatHistory",
                 new StringBody("apikey=" + APIKEY + "&start=0&padID=integration-test-pad-1&end=1"),
-                "{\"code\":0,\"message\":\"ok\",\"data\":{\"messages\":[{\"text\":\"hi from user1\",\"userId\":\"a.W3CerL3LH1xgvu3m\",\"time\":" + time1 +",\"userName\":\"integration-author-1\"},{\"text\":\"hi from user2\",\"userId\":\"a.yUKBa4lV71Rmj8C8\",\"time\":" + time2 +",\"userName\":\"integration-author-2\"}]}}");
+                "{\"code\":0,\"message\":\"ok\",\"data\":{\"messages\":[{\"text\":\"hi from user1\",\"userId\":\"a.W3CerL3LH1xgvu3m\",\"time\":" + time1 + ",\"userName\":\"integration-author-1\"},{\"text\":\"hi from user2\",\"userId\":\"a.yUKBa4lV71Rmj8C8\",\"time\":" + time2 + ",\"userName\":\"integration-author-2\"}]}}");
 
         mockRequest("deletePad",
                 new StringBody("apikey=" + APIKEY + "&padID=integration-test-pad-1"),
@@ -734,7 +736,7 @@ public class EPLiteClientIntegrationTest {
 
             response = client.listPadsOfAuthor(author1Id);
             List padsAuthor1 = (List) response.get("padIDs");
-            assertEquals(1, padsAuthor1.size());
+            assertEquals(0, padsAuthor1.size());
 
             response = client.appendChatMessage(padID, "hi from user2", author2Id, time1);
             assertTrue(response.isEmpty());
@@ -749,12 +751,12 @@ public class EPLiteClientIntegrationTest {
             response = client.getChatHistory(padID);
             List chatHistory = (List) response.get("messages");
             assertEquals(3, chatHistory.size());
-            assertEquals("gå å gjør et ærend", ((Map)chatHistory.get(2)).get("text"));
+            assertEquals("gå å gjør et ærend", ((Map) chatHistory.get(2)).get("text"));
 
             response = client.getChatHistory(padID, 0, 1);
             chatHistory = (List) response.get("messages");
             assertEquals(2, chatHistory.size());
-            assertEquals("hi from user2", ((Map)chatHistory.get(1)).get("text"));
+            assertEquals("hi from user2", ((Map) chatHistory.get(1)).get("text"));
         } finally {
             client.deletePad(padID);
         }
